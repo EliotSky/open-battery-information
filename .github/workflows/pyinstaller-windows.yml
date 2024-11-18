@@ -1,0 +1,34 @@
+name: Build PyInstaller for Windows
+
+on:
+  push:
+    branches:
+      - main  # Workflow uruchamia się na push w gałęzi `main`
+
+jobs:
+  build:
+    runs-on: windows-latest  # Workflow uruchamia się na maszynie Windows
+    
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v2  # Pobiera kod z repozytorium
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'  # Określ wersję Pythona, np. '3.8'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyinstaller  # Instalacja PyInstaller
+
+    - name: Build executable with PyInstaller
+      run: |
+        pyinstaller --onefile main.py  # Budowanie aplikacji EXE z pliku `main.py`
+
+    - name: Upload the executable
+      uses: actions/upload-artifact@v2  # Wysyła wygenerowany plik EXE jako artefakt
+      with:
+        name: executable
+        path: dist/  # Ścieżka do wygenerowanego pliku EXE
